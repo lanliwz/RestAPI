@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Employee"> 
+
+   <insert id="insert" parameterClass="com.ibatis.Employee">
+      insert into Employee(id, name, dept)
+      values (#id#, #name#, #dept#)
+
+      <selectKey resultClass="int" keyProperty="id">
+         select last_insert_id() as id
+      </selectKey>
+   </insert> 
+   
+   <select id="getAll" resultClass="com.ibatis.Employee">
+      SELECT * FROM EMPLOYEE
+   </select>
+
+</sqlMap>
