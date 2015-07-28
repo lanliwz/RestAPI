@@ -19,7 +19,7 @@
     <context:property-placeholder location="classpath:swagger.properties" />
     
     
-    <bean class="com.springSwagger.ContactController" />
+    <bean class="com.amex.cornerstone.controller.StudentController" />
     
     <!-- Configuration Bean -->
  

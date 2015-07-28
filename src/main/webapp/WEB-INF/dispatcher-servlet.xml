@@ -11,8 +11,7 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd" >
 
-	<context:component-scan base-package="com.ibatis,com.springSwagger,com.elasticsearch" />
-	
+	<context:component-scan base-package="com.amex" />
 	<context:annotation-config />
 	<mvc:default-servlet-handler />
 	<mvc:annotation-driven />
@@ -33,22 +32,55 @@
 		</property>
 	</bean> -->
 
-<!-- <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-<property name="locations">
-<list>
-<value>/WEB-INF/jdbc.properties</value>
-</list>
-</property>
-</bean>
+	<!-- <bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		p:location="/WEB-INF/jdbc.properties" />
 
-Data Source
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close" p:driverClassName="${jdbc.driverClassName}"
+		p:url="${jdbc.databaseurl}" p:username="${jdbc.username}" p:password="${jdbc.password}" />
+		 -->
+		 
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="jdbc" />
+	</bean>
 
-<bean id="DataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-	<property name="driverClassName" value="${jdbc.driverClassName}">
-	<property name="url" value="${jdbc.url}">
-	<property name="username" value="${jdbc.username}">
-	<property name="password" value="${jdbc.password}">
-</property></property></property></property></bean> -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/test1" />
+		<property name="username" value="root" />
+		<property name="password" value="" />
+	</bean>
+		 
+		 
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		  <property name="dataSource" ref="dataSource" />
+	</bean>
+
+		
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		  <property name="dataSource" ref="dataSource" />
+ 		  <property name="typeAliasesPackage" value="com.amex.cornerstone.model"/>
+		  <property name="mapperLocations" value="classpath*:com/amex/cornerstone/mappers/*.xml" />
+	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		  <constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		  <property name="basePackage" value="com.amex.cornerstone.mappers" />
+	</bean>
+		 
+	 <bean id="systemPropertiesLoader"
+			class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+			<property name="targetObject" value="#{systemProperties}" />
+			<property name="targetMethod" value="putAll" />
+			<property name="arguments">
+				<util:properties location="/WEB-INF/cornerstone.properties" />
+			</property>
+	</bean>
 	
 
 </beans>
